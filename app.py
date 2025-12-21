@@ -34,7 +34,7 @@ person_gender = st.selectbox("Gender", ["Male", "Female"]).lower()
 
 
 person_education = st.sidebar.selectbox(
-    "Education Level", ["HIGH_SCHOOL", "BACHELORS", "MASTER", "PHD", "OTHER"]
+    "Education Level", ["HIGH SCHOOL", "BACHELORS", "MASTER", "PHD", "OTHER"]
 ).title()
 
 person_income = st.number_input("person_income")
