@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import joblib
+import pickle
 
 
 # -----------------------------
@@ -21,7 +21,9 @@ st.write("Predict whether a loan application should be **Approved or Rejected** 
 # -----------------------------
 @st.cache_resource
 def load_model():
-    return joblib.load("decision_tree_model.jlb")
+    with open("decision_tree_model.pkl","rb") as f:
+        return pickle.load(f)
+   
 
 
 model = load_model()
