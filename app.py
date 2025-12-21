@@ -20,7 +20,7 @@ st.write("Predict whether a loan application should be **Approved or Rejected** 
 # -----------------------------
 @st.cache_resource
 def load_model():
-    with open("loan_model.pkl", "rb") as f:   # read binary
+    with open("decision_tree_model.pkl", "rb") as f:   # read binary
         return pickle.load(f)
 
 model = load_model()
