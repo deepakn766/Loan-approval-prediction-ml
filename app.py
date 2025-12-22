@@ -3,7 +3,6 @@ import pandas as pd
 import numpy as np
 import pickle
 
-
 # -----------------------------
 # Page config
 # -----------------------------
@@ -23,8 +22,6 @@ st.write("Predict whether a loan application should be **Approved or Rejected** 
 def load_model():
     with open("decision_tree_model.pkl","rb") as f:
         return pickle.load(f)
-   
-
 
 model = load_model()
 
@@ -34,7 +31,6 @@ model = load_model()
 st.sidebar.header("Applicant Details")
 
 person_gender = st.selectbox("Gender", ["Male", "Female"]).lower()
-
 
 person_education = st.sidebar.selectbox(
     "Education Level", ["HIGH SCHOOL", "BACHELORS", "MASTER", "PHD", "OTHER"]
@@ -96,24 +92,37 @@ input_data = pd.DataFrame({
 })
 
 # -----------------------------
+# Input validation function
+# -----------------------------
+def is_input_valid(data):
+    numeric_fields = [
+        "person_income", "loan_amnt", "loan_int_rate",
+        "loan_percent_income", "cb_person_cred_hist_length", "credit_score"
+    ]
+    return all(data[col].values[0] > 0 for col in numeric_fields)
+
+# -----------------------------
 # Prediction
 # -----------------------------
 if st.button("Predict Loan Status"):
-    prediction = model.predict(input_data)[0]
-    probability = model.predict_proba(input_data)[0][1]
+    if is_input_valid(input_data):
+        prediction = model.predict(input_data)[0]
+        probability = model.predict_proba(input_data)[0][1]
 
-    st.subheader("Prediction Result")
+        st.subheader("Prediction Result")
 
-    if prediction == 0:
-        st.success("✅ Loan Approved")
+        if prediction == 0:
+            st.success("✅ Loan Approved")
+        else:
+            st.error("❌ Loan Rejected")
+
+        st.metric(
+            label="Approval Probability",
+            value=f"{probability * 100:.2f}%"
+        )
+
+        st.info(
+            "⚠️ This prediction is based on historical data and should be used as a decision-support tool."
+        )
     else:
-        st.error("❌ Loan Rejected")
-
-    st.metric(
-        label="Approval Probability",
-        value=f"{probability * 100:.2f}%"
-    )
-
-    st.info(
-        "⚠️ This prediction is based on historical data and should be used as a decision-support tool."
-    )
+        st.warning("⚠️ Please fill in all numeric fields with values greater than 0 before predicting.")
